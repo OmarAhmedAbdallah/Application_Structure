@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Articles\" />
+    <ProjectReference Include="..\App.Data\App.Data.csproj" />
   </ItemGroup>
 
 </Project>

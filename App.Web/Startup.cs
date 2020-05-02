@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using App.Web.Infrastructure;
 using App.Web.Data;
+using App.Services;
+using App.Services.Implementation;
 
 namespace App.Web
 {
@@ -23,6 +25,8 @@ namespace App.Web
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddTransient<IArticleService, ArticleService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
