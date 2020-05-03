@@ -8,7 +8,10 @@ using App.Web.Infrastructure;
 using App.Web.Data;
 using App.Services;
 using App.Services.Implementation;
+using AutoMapper;
+using App.Web.Controllers;
 
+//in this project from nuget install AutoMapper.Extensions.Microsoft.Dependency
 namespace App.Web
 {
     public class Startup
@@ -25,6 +28,12 @@ namespace App.Web
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddAutoMapper(
+                typeof(IArticleService).Assembly,
+                typeof(HomeController).Assembly
+                ) ;
+
 
             services.AddTransient<IArticleService, ArticleService>();
 

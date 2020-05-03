@@ -1,6 +1,8 @@
 ﻿using App.Data.Models;
 using App.Services.Models.Articles;
 using App.Web.Data;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +13,14 @@ namespace App.Services.Implementation
     public class ArticleService : IArticleService
     {
         private const int PageSize = 10;
+        private readonly IMapper mapper;
 
         private readonly ApplicationDbContext data;
 
-        public ArticleService(ApplicationDbContext data) => this.data = data;
-
+        public ArticleService(ApplicationDbContext data, IMapper mapper) {
+            this.data = data;
+            this.mapper = mapper;
+        }
         public async Task<int> Create(string title, string description, string autherId)
         {
             var article = new Article
@@ -35,26 +40,15 @@ namespace App.Services.Implementation
                     .Articles
                     .Skip((page - 1) * PageSize)
                     .Take(PageSize)
-                    .Select(a => new ArticleListingServiceModel
-                    {
-                        Id = a.Id,
-                        Title = a.Title,
-                        AuthorName = a.Author.UserName
-                    })
+                    .ProjectTo<ArticleListingServiceModel>(this.mapper.ConfigurationProvider)
                     .ToListAsync();
 
 
         public async Task<ArticlesDetailsServceMode> Details(int Id)
                 =>await this.data.Articles
                                 .Where(a => a.Id == Id)
-                                .Select(a => new ArticlesDetailsServceMode
-                                {
-                                    Id= a.Id,
-                                    Title = a.Title,
-                                    Description = a.Description,
-                                    PublishedOn = a.PublishedOn,
-                                    Author = a.Author.UserName
-                                }).FirstOrDefaultAsync();
+                                .ProjectTo<ArticlesDetailsServceMode>(this.mapper.ConfigurationProvider)
+                                .FirstOrDefaultAsync();
 
         
 
