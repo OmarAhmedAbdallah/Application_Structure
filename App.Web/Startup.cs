@@ -28,8 +28,7 @@ namespace App.Web
 
             services.AddTransient<IArticleService, ArticleService>();
 
-            services.AddControllersWithViews();
-            services.AddRazorPages();
+        
         }
 
         

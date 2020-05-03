@@ -42,5 +42,59 @@ namespace App.Services.Implementation
                         AuthorName = a.Author.UserName
                     })
                     .ToListAsync();
+
+
+        public async Task<ArticlesDetailsServceMode> Details(int Id)
+                =>await this.data.Articles
+                                .Where(a => a.Id == Id)
+                                .Select(a => new ArticlesDetailsServceMode
+                                {
+                                    Id= a.Id,
+                                    Title = a.Title,
+                                    Description = a.Description,
+                                    PublishedOn = a.PublishedOn,
+                                    Author = a.Author.UserName
+                                }).FirstOrDefaultAsync();
+
+        
+
+        public async Task<bool> Edit(int id, string title, string description)
+        {
+            var article = await this.data.Articles.FindAsync(id);
+
+            if (article == null)
+            {
+                return false; 
+            }
+
+            
+            article.Title = title;
+            article.Description = description;
+
+            await this.data.SaveChangesAsync();
+
+            return false;
+        }
+
+        public Task<bool> Exists(int id, string authorId)
+        {
+            return this.data.Articles.AnyAsync(a => a.Id == id && a.AuthorId == authorId);
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var article = this.data.Articles.FindAsync(id);
+
+            if(article == null)
+            {
+                return false;
+            }
+
+            this.data.Remove(article);
+
+            await this.data.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
